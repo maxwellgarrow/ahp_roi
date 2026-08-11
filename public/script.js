@@ -15,11 +15,11 @@ function renderHourBars(containerId, values, cls) {
     const idle = (TRIAL_SHIFT_HRS - v).toFixed(1);
     const row = document.createElement("div");
     row.className = "util-row";
-    row.innerHTML = `
-      <div class="util-day">${day}</div>
-      <div class="util-bar-track"><div class="util-bar-fill ${cls}" style="width:${pct}%;"></div></div>
-      <div class="util-hrs-label">${v.toFixed(2)}h run &middot; ${idle}h idle</div>
-    `;
+   row.innerHTML = `
+  <div class="util-day">${day}</div>
+  <div class="util-bar-track"><div class="util-bar-fill ${cls}" style="width:${pct}%;"></div></div>
+  <div class="util-hrs-label">${v.toFixed(2)}h run</div>
+`;
     container.appendChild(row);
   });
 }
