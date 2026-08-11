@@ -228,6 +228,25 @@ table.scenario-editable input.hrs-input {
 }
 table.scenario-editable input.hrs-input:focus { outline: none; border-color: var(--eggplant); }
 
+.pct-input-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.pct-input-wrap input.pct-input {
+  width: 60px;
+  padding: 5px 6px;
+  border: 1px solid var(--light-gray);
+  border-radius: 5px;
+  font-size: 13px;
+  font-family: inherit;
+  text-align: right;
+  font-weight: 700;
+  color: var(--eggplant);
+}
+.pct-input-wrap input.pct-input:focus { outline: none; border-color: var(--eggplant); }
+.pct-input-wrap span { font-size: 13px; color: var(--gray-blue); font-weight: 700; }
+
 .payback-banner {
   margin-top: 18px;
   background: var(--gold);

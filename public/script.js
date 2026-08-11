@@ -12,14 +12,13 @@ function renderHourBars(containerId, values, cls) {
   TRIAL_DAYS.forEach((day, i) => {
     const v = values[i];
     const pct = (v / TRIAL_SHIFT_HRS) * 100;
-    const idle = (TRIAL_SHIFT_HRS - v).toFixed(1);
     const row = document.createElement("div");
     row.className = "util-row";
-   row.innerHTML = `
-  <div class="util-day">${day}</div>
-  <div class="util-bar-track"><div class="util-bar-fill ${cls}" style="width:${pct}%;"></div></div>
-  <div class="util-hrs-label">${v.toFixed(2)}h run</div>
-`;
+    row.innerHTML = `
+      <div class="util-day">${day}</div>
+      <div class="util-bar-track"><div class="util-bar-fill ${cls}" style="width:${pct}%;"></div></div>
+      <div class="util-hrs-label">${v.toFixed(2)}h run</div>
+    `;
     container.appendChild(row);
   });
 }
@@ -36,10 +35,10 @@ const avgRuntimeHrsInput = el("avgRuntimeHrs");
 const rateLowInput = el("rateLow");
 const rateMidInput = el("rateMid");
 const rateHighInput = el("rateHigh");
-const hrsInputs = {
-  conservative: el("hrsConservative"),
-  moderate: el("hrsModerate"),
-  aggressive: el("hrsAggressive"),
+const pctInputs = {
+  conservative: el("pctConservative"),
+  moderate: el("pctModerate"),
+  aggressive: el("pctAggressive"),
 };
 
 const fmtMoney = (n) => "$" + Math.round(n).toLocaleString("en-US");
@@ -74,11 +73,14 @@ function render() {
   // scenario table
   let conservativeMidValue = 0;
   ["conservative", "moderate", "aggressive"].forEach((key) => {
-    const hrsPerMachine = parseFloat(hrsInputs[key].value) || 0;
-    // Cap additional hours at the available idle pool per machine, so it can't exceed reality
-    const cappedHrs = Math.min(hrsPerMachine, idleHrsPerMachineYr);
-    const totalHrs = cappedHrs * inp.machineCount;
+    const pct = parseFloat(pctInputs[key].value) || 0;
+    // % utilization increase -> additional hours/machine/yr, based on shift length
+    const rawHrsPerMachine = inp.shiftHours * (pct / 100) * inp.workingDays;
+    // Cap at the available idle pool per machine, so it can't exceed reality
+    const cappedHrsPerMachine = Math.min(rawHrsPerMachine, idleHrsPerMachineYr);
+    const totalHrs = cappedHrsPerMachine * inp.machineCount;
 
+    el(`hrsPerMachine${cap(key)}`).textContent = cappedHrsPerMachine.toFixed(0) + " hrs";
     el(`total${cap(key)}`).textContent = fmtHrs(totalHrs) + " hrs";
     const low = totalHrs * inp.rateLow;
     const mid = totalHrs * inp.rateMid;
@@ -99,8 +101,8 @@ function render() {
   el("basisNote").textContent =
     `Idle pool basis: ${fmtHrs(idleHrsPerMachineYr)} idle hrs/machine/yr ` +
     `(${inp.shiftHours}-hr shift − ${inp.avgRuntimeHrs}-hr avg runtime) × ${inp.workingDays} working days. ` +
-    `Additional-hours inputs are capped at this idle ceiling per machine. Total hrs = additional hrs/machine × ${inp.machineCount} machines. ` +
-    `Value = total hrs × selected $/hr rate.`;
+    `Utilization increase % is converted to hrs/machine/yr as (shift hrs × % increase × working days), capped at this idle ceiling. ` +
+    `Total hrs = hrs/machine/yr × ${inp.machineCount} machines. Value = total hrs × selected $/hr rate.`;
 }
 
 function cap(s) {
@@ -116,7 +118,7 @@ function cap(s) {
   rateLowInput,
   rateMidInput,
   rateHighInput,
-  ...Object.values(hrsInputs),
+  ...Object.values(pctInputs),
 ].forEach((input) => input.addEventListener("input", render));
 
 render();

@@ -155,13 +155,14 @@
         <label>High <input type="number" id="rateHigh" value="50" min="0" step="1"></label>
       </div>
     </div>
-    <p class="edit-note">Edit any field &mdash; the table below updates instantly. Scenarios are defined in <b>additional runtime hours per machine per year</b>, not percentages.</p>
+    <p class="edit-note">Edit any field &mdash; the table below updates instantly. Scenarios are defined as a <b>utilization increase (% of the shift)</b>, converted to hours automatically.</p>
 
     <table class="scenario-editable" id="scenarioTable">
       <thead>
         <tr>
           <th>Scenario</th>
-          <th>Additional Hrs / Machine / Yr</th>
+          <th>Utilization Increase</th>
+          <th>Hrs / Machine / Yr</th>
           <th>Total Hrs (fleet)</th>
           <th>Value @ Low</th>
           <th>Value @ Mid</th>
@@ -171,7 +172,8 @@
       <tbody>
         <tr class="hi" data-row="conservative">
           <td>&#9733; Conservative</td>
-          <td><input type="number" class="hrs-input" id="hrsConservative" value="100" min="0" step="10"></td>
+          <td><div class="pct-input-wrap"><input type="number" class="pct-input" id="pctConservative" value="1" min="0" step="0.5"><span>%</span></div></td>
+          <td class="out" id="hrsPerMachineConservative">&mdash;</td>
           <td class="out" id="totalConservative">&mdash;</td>
           <td class="out val" id="lowConservative">&mdash;</td>
           <td class="out val" id="midConservative">&mdash;</td>
@@ -179,7 +181,8 @@
         </tr>
         <tr data-row="moderate">
           <td>Moderate</td>
-          <td><input type="number" class="hrs-input" id="hrsModerate" value="250" min="0" step="10"></td>
+          <td><div class="pct-input-wrap"><input type="number" class="pct-input" id="pctModerate" value="3" min="0" step="0.5"><span>%</span></div></td>
+          <td class="out" id="hrsPerMachineModerate">&mdash;</td>
           <td class="out" id="totalModerate">&mdash;</td>
           <td class="out val" id="lowModerate">&mdash;</td>
           <td class="out val" id="midModerate">&mdash;</td>
@@ -187,7 +190,8 @@
         </tr>
         <tr data-row="aggressive">
           <td>Aggressive</td>
-          <td><input type="number" class="hrs-input" id="hrsAggressive" value="500" min="0" step="10"></td>
+          <td><div class="pct-input-wrap"><input type="number" class="pct-input" id="pctAggressive" value="5" min="0" step="0.5"><span>%</span></div></td>
+          <td class="out" id="hrsPerMachineAggressive">&mdash;</td>
           <td class="out" id="totalAggressive">&mdash;</td>
           <td class="out val" id="lowAggressive">&mdash;</td>
           <td class="out val" id="midAggressive">&mdash;</td>
